@@ -7,7 +7,9 @@
 
 Marked one is intended to be an simple interface where you pass in markdown held, and you will
 receive a traversable abstract syntax tree in return. This library is in its EXTREMELY early stages
-and will need some decent work to get it into a 
+and will need some decent work to get it into a usable state.
+
+PRs open!
 
 This is based on the simple markdown syntax [currently supported by Github](https://github.com/im-luka/markdown-cheatsheet):
 
