@@ -39,8 +39,6 @@ PRs open!
 
 ### Overall Tasks
 
-
-
 ### Leaf Blocks
 
 Leaf blocks contain no other blocks
@@ -57,6 +55,11 @@ Leaf blocks contain no other blocks
 - [ ] Tables
 
 ### Container Blocks
+
+- [ ] Block quotes
+- [ ] List items
+- [ ] Task list items
+- [ ] Lists
 
 ## Quick start
 
