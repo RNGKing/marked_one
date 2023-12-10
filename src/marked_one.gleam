@@ -31,15 +31,15 @@ pub type HeadingLevel {
   H6
 }
 
-pub type Element {
+pub type Block {
   Heading(value: List(TextLike), level: HeadingLevel)
-  Blockquote(id: option.Option(String), children: List(Element))
+  Blockquote(id: option.Option(String), children: List(Block))
   Image(id: option.Option(String), url: String)
-  Paragraph(id: option.Option(String), children: List(Element))
+  Paragraph(id: option.Option(String), children: List(Block))
   ReferenceLink(id: option.Option(String), name: String, url: String)
   CodeBlock(id: option.Option(String), value: String)
-  OrderedList(id: option.Option(String), order_id: Int, children: List(Element))
-  UnorderedList(id: option.Option(String), children: List(Element))
+  OrderedList(id: option.Option(String), order_id: Int, children: List(Block))
+  UnorderedList(id: option.Option(String), children: List(Block))
   Table(id: option.Option(String), headers: List(TableHeader), rows: List(Row))
   TaskList(id: option.Option(String), complete: Bool)
   Footnote(id: option.Option(String), target_id: String)
@@ -55,11 +55,11 @@ pub type TextLike {
 import gleam/io
 
 pub fn main() {
-  parse_element("## [google](https://google.com)\n")
+  parse_block("## [google](https://google.com)\n")
   |> io.debug
 }
 
-pub fn parse_element(input: String) {
+pub fn parse_block(input: String) {
   case input {
     "# " <> rest ->
       case consume_till_new_line(rest, "") {
@@ -140,22 +140,18 @@ fn extract_striked(input: String) {
 
 fn parse_plain_text(input: String, emphasis: set.Set(EmphasisType)) {
   let recurse = False
-
   let #(input, emphasis, recurse) = case extract_bold(input) {
     Ok(bold) -> #(bold, set.insert(emphasis, Bold), True)
     _ -> #(input, emphasis, recurse)
   }
-
   let #(input, emphasis, recurse) = case extract_italic(input) {
     Ok(italic) -> #(italic, set.insert(emphasis, Italic), True)
     _ -> #(input, emphasis, recurse)
   }
-
   let #(input, emphasis, recurse) = case extract_striked(input) {
     Ok(bold) -> #(bold, set.insert(emphasis, Striked), True)
     _ -> #(input, emphasis, recurse)
   }
-
   case recurse {
     True -> parse_plain_text(input, emphasis)
     False -> #(input, set.to_list(emphasis))
@@ -205,13 +201,11 @@ fn extract_enclosed(input: String, opening: String, closing: String) {
     |> string.to_graphemes
     |> list.map(fn(char) { "\\" <> char })
     |> string.join("")
-
   let closing =
     closing
     |> string.to_graphemes
     |> list.map(fn(char) { "\\" <> char })
     |> string.join("")
-
   case regex.from_string("^" <> opening <> "(.*)" <> closing <> "$") {
     Ok(pattern) ->
       case regex.scan(pattern, input) {
@@ -229,7 +223,6 @@ fn consume_till_closing(
 ) -> Result(#(String, String), Nil) {
   let input_length = string.length(input)
   let delimiter_length = string.length(delimiter)
-
   case string.slice(input, 0, delimiter_length) {
     candidate if candidate == delimiter -> {
       Ok(#(
