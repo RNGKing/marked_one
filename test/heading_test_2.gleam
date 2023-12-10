@@ -90,5 +90,5 @@ pub fn heading_test_multiline_file_io_test() {
   file.read("./test/test_data.mkd")
   |> should.be_ok
   |> document.parse_document
-  |> io.debug
+  |> should.be_ok
 }
