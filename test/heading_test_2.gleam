@@ -91,4 +91,5 @@ pub fn heading_test_multiline_file_io_test() {
   |> should.be_ok
   |> document.parse_document
   |> should.be_ok
+  |> io.debug
 }

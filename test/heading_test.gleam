@@ -60,5 +60,4 @@ pub fn header_h6_test() {
 pub fn header_multiline_test() {
   "# foo\n## foo\n### foo\n#### foo\n##### foo\n###### foo\n"
   |> marked_one.parse_block
-  |> io.debug
 }

@@ -3,6 +3,7 @@ import gleam/string
 import gleam/bool
 import gleam/result
 import gleam/list
+import gleam/io
 
 pub type Document {
   Document(blocks: List(PhaseOneBlock))
@@ -15,7 +16,10 @@ pub type ParserError {
 pub fn parse_document(input: String) -> Result(Document, ParserError) {
   let output_doc = Document(blocks: [])
   let input_lines = string.split(input, "\n")
-  parse_doc_internal(input_lines, output_doc)
+  case parse_doc_internal(input_lines, output_doc) {
+    Ok(doc) -> Ok(Document(blocks: list.reverse(doc.blocks)))
+    Error(err) -> Error(err)
+  }
 }
 
 fn parse_doc_internal(
@@ -59,11 +63,11 @@ pub fn parse_heading(
     when: result.is_error(heading),
     return: Error(ParseError("While parsing heading, no match for input found")),
   )
-  let assert Ok(output_blocks) = heading
-  let output_list = list.reverse([output_blocks, ..doc.blocks])
-  Ok(Document(blocks: output_list))
+  let assert Ok(output_block) = heading
+  Ok(Document(blocks: [output_block, ..doc.blocks]))
 }
 
+// this can be migrated into another file
 pub fn is_line_heading(line: String) -> Bool {
   case line {
     "# " <> rest -> True
