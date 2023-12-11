@@ -5,7 +5,7 @@
 
 ## What is Marked One?
 
-Marked On is a pure Gleam implementation of the [GitHub Markdown Specification](https://github.github.com/gfm/)
+Marked One is a pure Gleam implementation of the [GitHub Markdown Specification](https://github.github.com/gfm/)
 The goal is to create a library that consumes strings and outputs a queryable data source that you can
 use whenever you need to build your own output specification. 
 
