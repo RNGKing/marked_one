@@ -11,6 +11,8 @@ Marked One is a pure Gleam implementation of the [GitHub Markdown Specification]
 The goal is to create a library that consumes strings and outputs a queryable data source that you can
 use whenever you need to build your own output specification. 
 
+[We are basing the parsing off of the work done here](https://github.github.com/gfm/)
+
 ```
 import block_def/document
 import gleam/io
@@ -28,9 +30,7 @@ pub fn main(){
 }
 ```
 
-PRs open!
-
-- [We are basing the parsing off of the work done here](https://github.github.com/gfm/)
+__PRs open!__
 
 ## Support the other Gleam markup processors
 - [Jot](https://github.com/lpil/jot)
