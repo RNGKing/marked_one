@@ -29,8 +29,9 @@ pub fn main(){
 PRs open!
 
 - [We are basing the parsing off of the work done here](https://github.github.com/gfm/)
-- Support the other Gleam markup processors
-- - [Jot](https://github.com/lpil/jot)
+
+## Support the other Gleam markup processors
+- [Jot](https://github.com/lpil/jot)
 
 ## TO-DO LIST
 
