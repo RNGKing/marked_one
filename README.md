@@ -3,6 +3,8 @@
 [![Package Version](https://img.shields.io/hexpm/v/parser)](https://hex.pm/packages/parser)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/parser/)
 
+Hey there Gleamlin, ready to start your markup journey?
+
 ## What is Marked One?
 
 Marked One is a pure Gleam implementation of the [GitHub Markdown Specification](https://github.github.com/gfm/)
