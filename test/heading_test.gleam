@@ -1,11 +1,7 @@
 // This file contains the basic definition for ATX Headings, 
 // Need to figure out if we want to even think of support SETX Headings
 import gleeunit/should
-import gleam/io
-import marked_one.{
-  Bold, H1, H2, H3, H4, H5, H6, Heading, Italic, Link, Plain, Striked,
-  parse_block,
-}
+import marked_one.{H1, H2, H3, H4, H5, H6, Heading, Plain, parse_block}
 
 // Basic Parsing Tests
 

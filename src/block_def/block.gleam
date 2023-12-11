@@ -1,5 +1,3 @@
-import gleam/option
-
 pub type EmphasisType {
   Bold
   Italic
@@ -41,6 +39,8 @@ pub type PhaseOneBlock {
   Footnote
   JumpTo
   HorizontalLine
+  OpenParagraph(text: String)
+  CompleteParagraph(text: String)
 }
 
 pub type TextLike {

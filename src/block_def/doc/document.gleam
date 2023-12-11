@@ -3,6 +3,7 @@ import gleam/string
 import gleam/bool
 import gleam/result
 import gleam/list
+import block_def/doc/parsing_helpers as helper
 import gleam/io
 
 pub type Document {
@@ -26,7 +27,7 @@ fn parse_doc_internal(
   input: List(String),
   doc: Document,
 ) -> Result(Document, ParserError) {
-  case input {
+  case list.filter(input, fn(item) { !string.is_empty(item) }) {
     [line, ..tail] -> {
       let result = parse_line(line, doc)
       use <- bool.guard(when: result.is_error(result), return: result)
@@ -39,17 +40,16 @@ fn parse_doc_internal(
 
 // big parser...wanted to avoid this
 fn parse_line(line: String, doc: Document) -> Result(Document, ParserError) {
+  // Parse types in this big function
   use <- bool.guard(
-    when: is_line_heading(line),
+    when: helper.is_line_heading(line),
     return: parse_heading(line, doc),
   )
-  Ok(doc)
+  // finally parse out a paragraph
+  parse_paragraph(line, doc)
 }
 
-pub fn parse_heading(
-  line: String,
-  doc: Document,
-) -> Result(Document, ParserError) {
+fn parse_heading(line: String, doc: Document) -> Result(Document, ParserError) {
   let heading = case line {
     "# " <> rest -> Ok(Heading(text: rest, level: H1))
     "## " <> rest -> Ok(Heading(text: rest, level: H2))
@@ -67,15 +67,59 @@ pub fn parse_heading(
   Ok(Document(blocks: [output_block, ..doc.blocks]))
 }
 
-// this can be migrated into another file
-pub fn is_line_heading(line: String) -> Bool {
+fn parse_paragraph(line: String, doc: Document) -> Result(Document, ParserError) {
+  io.debug(line)
   case line {
-    "# " <> rest -> True
-    "## " <> rest -> True
-    "### " <> rest -> True
-    "#### " <> rest -> True
-    "##### " <> rest -> True
-    "###### " <> rest -> True
-    _ -> False
+    "\n" -> {
+      case list.first(doc.blocks) {
+        Ok(val) -> {
+          case val {
+            block.OpenParagraph(text) -> {
+              let [_, ..tail] = doc.blocks
+              Ok(Document(blocks: [block.CompleteParagraph(text: text), ..tail]))
+            }
+            _ -> Ok(doc)
+          }
+        }
+        _ -> Ok(doc)
+      }
+    }
+    "\eof" -> {
+      case list.first(doc.blocks) {
+        Ok(val) -> {
+          case val {
+            block.OpenParagraph(text) -> {
+              let [_, ..tail] = doc.blocks
+              Ok(Document(blocks: [block.CompleteParagraph(text: text), ..tail]))
+            }
+            _ -> Ok(doc)
+          }
+        }
+        _ -> Ok(doc)
+      }
+    }
+    text_value -> {
+      case list.first(doc.blocks) {
+        Ok(block_type) -> {
+          case block_type {
+            block.OpenParagraph(text) -> {
+              let [_, ..tail] = doc.blocks
+              Ok(Document(blocks: [
+                block.OpenParagraph(text: text <> " " <> text_value),
+                ..tail
+              ]))
+            }
+            _ -> {
+              Ok(Document(blocks: [
+                block.OpenParagraph(text: text_value),
+                ..doc.blocks
+              ]))
+            }
+          }
+        }
+        _ -> Ok(doc)
+      }
+    }
+    _ -> Ok(doc)
   }
 }
